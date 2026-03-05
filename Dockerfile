@@ -1,14 +1,15 @@
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="/root/.foundry/bin:$PATH"
+ENV PATH="/root/.foundry/bin:/usr/bin:/usr/local/bin:$PATH"
 
 RUN apt-get update && apt-get install -y \
     curl git build-essential ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && node --version && npm --version
 
 RUN curl -L https://foundry.paradigm.xyz | bash && foundryup
 
