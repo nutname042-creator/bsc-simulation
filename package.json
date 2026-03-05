@@ -1,14 +1,10 @@
 {
   "name": "bsc-simulation",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "BSC Simulation with Anvil",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "bash start.sh"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "ethers": "^6.16.0"
   }
