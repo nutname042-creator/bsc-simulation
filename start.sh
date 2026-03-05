@@ -2,7 +2,6 @@
 set -e
 
 STATE_FILE="/data/chain-state.json"
-SETUP_DONE="/data/setup_done"
 mkdir -p /data
 
 if [ -f "$STATE_FILE" ] && [ -s "$STATE_FILE" ]; then
@@ -21,13 +20,19 @@ until curl -sf -X POST http://127.0.0.1:8545 \
 done
 echo "Anvil ready!"
 
-if [ ! -f "$SETUP_DONE" ]; then
+USDT_CODE=$(curl -s -X POST http://127.0.0.1:8545 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_getCode","params":["0x55d398326f99059fF775485246999027B3197955","latest"],"id":1}' \
+  | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d['result']))")
+
+echo "USDT code length: $USDT_CODE"
+
+if [ "$USDT_CODE" -lt 10 ]; then
   echo "Running initial setup..."
   cd /app && node scripts/deploy_pancake.js
-  touch "$SETUP_DONE"
   echo "Setup complete!"
 else
-  echo "Setup already done, skipping..."
+  echo "Contracts already deployed, skipping setup."
 fi
 
 echo "BSC simulation running!"
