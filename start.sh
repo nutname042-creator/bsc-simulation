@@ -1,12 +1,10 @@
 #!/bin/bash
-set -e
 
 STATE_FILE="/data/chain-state.json"
 mkdir -p /data
 
-# Always start fresh (no state loading) until setup is confirmed working
 echo "Starting fresh Anvil..."
-anvil --host 0.0.0.0 --port 8545 --chain-id 56 --block-time 3 --gas-limit 30000000 --dump-state "$STATE_FILE" &
+anvil --host 0.0.0.0 --port 8545 --chain-id 56 --block-time 3 --gas-limit 30000000 &
 
 echo "Waiting for Anvil..."
 until curl -sf -X POST http://127.0.0.1:8545 \
@@ -17,7 +15,8 @@ done
 echo "Anvil ready!"
 
 echo "Running setup..."
-cd /app && node scripts/deploy_pancake.js
+cd /app && node scripts/deploy_pancake.js 2>&1
+echo "Setup exit code: $?"
 
 echo "BSC simulation running!"
 wait
