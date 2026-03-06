@@ -68,18 +68,18 @@ async function main() {
   const routerArtifact = JSON.parse(fs.readFileSync(path.join(PERIPHERY_PATH, 'UniswapV2Router02.json')));
 
   console.log('Step 1: Deploying WBNB...');
-  const wbnbCode = await deployAndGetCode(wallet, wethArtifact, [], WETH_ABI);
+  const wbnbCode = await deployAndGetCode(wallet, wethArtifact, [], wethArtifact.abi);
   await provider.send('anvil_setCode', [WBNB_ADDRESS, wbnbCode]);
   console.log('WBNB at:', WBNB_ADDRESS);
 
   console.log('Step 2: Deploying Factory...');
-  const factoryCode = await deployAndGetCode(wallet, factoryArtifact, [DEPLOYER], FACTORY_ABI);
+  const factoryCode = await deployAndGetCode(wallet, factoryArtifact, [DEPLOYER], factoryArtifact.abi);
   await provider.send('anvil_setCode', [FACTORY_ADDRESS, factoryCode]);
   await provider.send('anvil_setStorageAt', [FACTORY_ADDRESS, '0x0000000000000000000000000000000000000000000000000000000000000001', ethers.zeroPadValue(DEPLOYER, 32)]);
   console.log('Factory at:', FACTORY_ADDRESS);
 
   console.log('Step 3: Deploying Router...');
-  const routerCode = await deployAndGetCode(wallet, routerArtifact, [FACTORY_ADDRESS, WBNB_ADDRESS], ROUTER_ABI);
+  const routerCode = await deployAndGetCode(wallet, routerArtifact, [FACTORY_ADDRESS, WBNB_ADDRESS], routerArtifact.abi);
   await provider.send('anvil_setCode', [ROUTER_ADDRESS, routerCode]);
   console.log('Router at:', ROUTER_ADDRESS);
 
